@@ -1,0 +1,23 @@
+{{define "title"}}Home{{end}}
+{{define "main"}}
+<h2>Your Anime List</h2>
+{{if .IsAuthenticated}}
+<table>
+<tr>
+<th>Title</th>
+<th>Status</th>
+<th>ID</th>
+</tr>
+{{range .Animes}}
+<tr>
+<!-- Use the new clean URL style-->
+<td><a href='/snippet/view/{{.ID}}'>{{.Title}}</a></td>
+<td>{{.Status}}</td>
+<td>#{{.ID}}</td>
+</tr>
+{{end}}
+</table>
+{{else}}
+<p>You need to Sign Up/Login to see your anime list ... </p>
+{{end}}
+{{end}}

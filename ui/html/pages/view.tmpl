@@ -1,0 +1,15 @@
+{{define "title"}}Snippet #{{.Anime.ID}}{{end}}
+{{define "main"}}
+{{with .Anime}}
+<div class='snippet'>
+<div class='metadata'>
+<strong>{{.Title}}</strong>
+<span>#{{.ID}}</span>
+</div>
+<pre><code>{{.Status}}</code></pre>
+<div class='metadata'>
+<!-- Use the new template function here -->
+</div>
+</div>
+{{end}}
+{{end}}
