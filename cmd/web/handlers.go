@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 
 	"modules/internal/models"
 	"modules/internal/models/validator"
@@ -15,8 +14,7 @@ import (
 
 type snippetCreateForm struct {
 	Title               string `form:"title"`
-	Content             string `form:"content"`
-	Expires             int    `form:"expires"`
+	Status              string `form:"status"`
 	validator.Validator `form:"-"`
 }
 
@@ -75,9 +73,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 
-	data.Form = snippetCreateForm{
-		Expires: 365,
-	}
+	data.Form = snippetCreateForm{}
 
 	app.render(w, http.StatusOK, "create.tmpl", data)
 }
@@ -93,8 +89,7 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 
 	form.CheckField(validator.NotBlank(form.Title), "title", "This field cannot be blank")
 	form.CheckField(validator.MaxChars(form.Title, 100), "title", "This field cannot be more than 100 characters long")
-	form.CheckField(validator.NotBlank(form.Content), "content", "This field cannot be blank")
-	form.CheckField(validator.PermittedInt(form.Expires, 1, 7, 365), "expires", "This field must equal 1, 7 or 365")
+	form.CheckField(validator.PermittedString(form.Status, "completed", "watching"), "status", "This field must equal to completed or watching")
 
 	if !form.Valid() {
 		data := app.newTemplateData(r)
@@ -103,15 +98,15 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	id, err := app.snippets.Insert(form.Title, form.Content, form.Expires)
+	err = app.animes.Insert(form.Title, form.Status, app.sessionManager.GetString(r.Context(), "owner"))
 	if err != nil {
 		app.serverError(w, err)
 		return
 	}
 
-	app.sessionManager.Put(r.Context(), "flash", "Snippet successfully created!")
+	app.sessionManager.Put(r.Context(), "flash", "Anime added successfully!")
 
-	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (app *application) decodePostForm(r *http.Request, dst any) error {

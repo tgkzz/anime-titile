@@ -18,18 +18,18 @@ type AnimeModel struct {
 	DB *pgxpool.Pool
 }
 
-func (m *AnimeModel) Insert(tittle string, status string, owner string) (int, error) {
+func (m *AnimeModel) Insert(title string, status string, owner string) error {
 	conn, err := m.DB.Acquire(context.Background())
 	if err != nil {
-		return 0, err
+		return err
 	}
-	row := conn.QueryRow(context.Background(), "insert into animes (tittle, status, owner) values ($1, $2, $3)", tittle, status, owner)
+	row := conn.QueryRow(context.Background(), "insert into animes (title, status, owner) values ($1, $2, $3) returning id", title, status, owner)
 	var id int64
 	err = row.Scan(&id)
 	if err != nil {
-		return 0, err
+		return err
 	}
-	return int(id), nil
+	return nil
 }
 
 func (m *AnimeModel) Get(id int, owner string) (*Anime, error) {
@@ -56,7 +56,7 @@ func (m *AnimeModel) All(owner string) ([]*Anime, error) {
 		return nil, err
 	}
 
-	rows, err2 := conn.Query(context.Background(), "select id, title, status from animes where owner = $1", owner)
+	rows, err2 := conn.Query(context.Background(), "select id, title, status from animes where owner = $1 order by title", owner)
 	defer conn.Release()
 
 	if err2 != nil {

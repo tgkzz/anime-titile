@@ -60,3 +60,12 @@ func PermittedInt(value int, permittedValues ...int) bool {
 	}
 	return false
 }
+
+func PermittedString(value string, permittedValues ...string) bool {
+	for i := range permittedValues {
+		if value == permittedValues[i] {
+			return true
+		}
+	}
+	return false
+}
