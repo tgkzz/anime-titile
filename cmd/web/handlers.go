@@ -12,7 +12,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-type snippetCreateForm struct {
+type animeCreateForm struct {
 	Title               string `form:"title"`
 	Status              string `form:"status"`
 	validator.Validator `form:"-"`
@@ -45,7 +45,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "home.tmpl", data)
 }
 
-func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
+func (app *application) animeView(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 
 	id, err := strconv.Atoi(params.ByName("id"))
@@ -70,16 +70,16 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "view.tmpl", data)
 }
 
-func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
+func (app *application) animeCreate(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 
-	data.Form = snippetCreateForm{}
+	data.Form = animeCreateForm{}
 
 	app.render(w, http.StatusOK, "create.tmpl", data)
 }
 
-func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
-	var form snippetCreateForm
+func (app *application) animeCreatePost(w http.ResponseWriter, r *http.Request) {
+	var form animeCreateForm
 
 	err := app.decodePostForm(r, &form)
 	if err != nil {
@@ -219,7 +219,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	app.sessionManager.Put(r.Context(), "authenticatedUserID", id)
 	app.sessionManager.Put(r.Context(), "owner", form.Email)
 
-	http.Redirect(w, r, "/snippet/create", http.StatusSeeOther)
+	http.Redirect(w, r, "/anime/create", http.StatusSeeOther)
 }
 
 func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {

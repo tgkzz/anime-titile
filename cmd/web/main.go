@@ -21,7 +21,6 @@ import (
 type application struct {
 	errorLog       *log.Logger
 	infoLog        *log.Logger
-	snippets       *models.SnippetModel
 	animes         *models.AnimeModel
 	users          *models.UserModel
 	templateCache  map[string]*template.Template
@@ -62,7 +61,6 @@ func main() {
 	app := &application{
 		errorLog:       errorLog,
 		infoLog:        infoLog,
-		snippets:       &models.SnippetModel{DB: db},
 		animes:         &models.AnimeModel{DB: db},
 		users:          &models.UserModel{DB: db},
 		templateCache:  templateCache,
